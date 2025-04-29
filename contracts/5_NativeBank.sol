@@ -31,14 +31,17 @@ contract NativeBank is INativeBank {
         if (amount == 0) {
             revert WithdrawalAmountZero(account);
         }
-        if (amount > balances[msg.sender]) {
-            revert WithdrawalAmountExceedsBalance(account, amount, balances[account]);
+        uint256 balance = balances[account];
+        if (amount > balance) {
+            revert WithdrawalAmountExceedsBalance(account, amount, balance);
         }
-        unchecked {
-            balances[account] -= amount;
+        (bool success, ) = account.call{value: amount}("");
+        if (success) {
+            unchecked {
+                balances[account] = balance - amount;
+            }
+            emit Withdrawal(account, amount);
         }
-        payable(account).transfer(amount);
-        emit Withdrawal(account, amount);
     }
 
     function deposit() external payable {
@@ -56,8 +59,4 @@ contract NativeBank is INativeBank {
     receive() external payable { 
         depositImplementation();
     }
-
-    fallback() external payable {
-        depositImplementation();
-     }
 }
