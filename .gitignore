@@ -2,3 +2,4 @@
 .idea
 .states
 contracts/artifacts
+tests/artifacts
