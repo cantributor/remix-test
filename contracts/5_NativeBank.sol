@@ -10,7 +10,7 @@ contract NativeBank is INativeBank {
     mapping(address => uint) private balances;
 
     constructor() {
-        owner = msg.sender; 
+        owner = msg.sender;
     }
 
     modifier onlyOwner() {
@@ -56,7 +56,7 @@ contract NativeBank is INativeBank {
         withdrawImplemention(account, amount);
     }
 
-    receive() external payable { 
+    receive() external payable {
         depositImplementation();
     }
 }
